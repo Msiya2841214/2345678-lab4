@@ -1,13 +1,16 @@
 const SearchBtn = document.getElementById("search-btn");
 const spinner = document.getElementById("loading-spinner");
 const DisplayCoutry= document.getElementById("country-info");
+const errorMessage = document.getElementById("error-message");
 
 
-SearchBtn.addEventListener("click",async function(){
-    spinner.style.display ="block";
-    const Input_name = document.getElementById("country-input").value.trim();
-    countryName = Input_name;
-    try{ const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
+async function searchCountry(countryName){
+    // const Input_name = document.getElementById("country-input").value.trim();
+    // countryName = Input_name;
+    try{ 
+        spinner.classList.remove("hidden");
+        errorMessage.classList.add("hidden");
+        const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
             if(!response.ok){
                 throw new Error("Country not found")
             }
@@ -24,11 +27,12 @@ SearchBtn.addEventListener("click",async function(){
            console.log(data);
 
           if(country.borders && country.borders.length >0){
-            const code = country.borders;
+             const code = country.borders.join(",");
             const respoborder = await fetch(`https://restcountries.com/v3.1/alpha?codes=${code}`);
             const borderData = await respoborder.json();
 
             const borderSec = document.getElementById("bordering-countries");
+            borderSec.innerHTML = ""; 
 
             for(let i=0;i<borderData.length;i++){
                 const sec = document.createElement("section");
@@ -42,7 +46,19 @@ SearchBtn.addEventListener("click",async function(){
           
         }
     catch(error){
-        DisplayCoutry.innerHTML = `<p style="color:red;">${error.message}</p>`;
+       errorMessage.textContent = error.message;
+        errorMessage.classList.remove("hidden");
     }
+    finally{
+       spinner.style.display ="none";
+       spinner.classList.add("hidden");
+    }
+}
+
+SearchBtn.addEventListener("click",async function(){
+    const Input_name = document.getElementById("country-input").value.trim();
+    countryName = Input_name;
+    searchCountry(countryName);
+
 })
 
