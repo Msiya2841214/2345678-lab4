@@ -39,6 +39,8 @@ async function searchCountry(countryName){
                 let border=borderData[i];
                 sec.innerHTML=`
                 <p>${border.name.common}</p>
+                <img src="${border.flags.svg}" width="80">
+              
                 `
                 borderSec.appendChild(sec);
             }
