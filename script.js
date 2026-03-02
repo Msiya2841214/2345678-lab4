@@ -4,12 +4,15 @@ const DisplayCoutry= document.getElementById("country-info");
 const errorMessage = document.getElementById("error-message");
 
 
+const borderSec = document.getElementById("bordering-countries");
 async function searchCountry(countryName){
     // const Input_name = document.getElementById("country-input").value.trim();
     // countryName = Input_name;
     try{ 
-        spinner.classList.remove("hidden");
+        spinner.classList.add("hidden");
         errorMessage.classList.add("hidden");
+        borderSec.innerHTML="";
+        DisplayCoutry.innerHTML="";
         const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
             if(!response.ok){
                 throw new Error("Country not found")
@@ -25,14 +28,12 @@ async function searchCountry(countryName){
                 <img src="${country.flags.svg}" alt="${country.name.common} flag">
            `;
            console.log(data);
-
+           
           if(country.borders && country.borders.length >0){
-             const code = country.borders.join(",");
+            const code = country.borders.join(",");
+           
             const respoborder = await fetch(`https://restcountries.com/v3.1/alpha?codes=${code}`);
             const borderData = await respoborder.json();
-
-            const borderSec = document.getElementById("bordering-countries");
-            borderSec.innerHTML = ""; 
 
             for(let i=0;i<borderData.length;i++){
                 const sec = document.createElement("section");
@@ -53,7 +54,7 @@ async function searchCountry(countryName){
     }
     finally{
        spinner.style.display ="none";
-       spinner.classList.add("hidden");
+       spinner.classList.remove("hidden");
     }
 }
 
