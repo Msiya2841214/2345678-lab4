@@ -22,7 +22,24 @@ SearchBtn.addEventListener("click",async function(){
                 <img src="${country.flags.svg}" alt="${country.name.common} flag">
            `;
            console.log(data);
-          const respoborder = await fetch("https://restcountries.com/v3.1/alpha/{code}")
+
+          if(country.borders && country.borders.length >0){
+            const code = country.borders;
+            const respoborder = await fetch(`https://restcountries.com/v3.1/alpha?codes=${code}`);
+            const borderData = await respoborder.json();
+
+            const borderSec = document.getElementById("bordering-countries");
+
+            for(let i=0;i<borderData.length;i++){
+                const sec = document.createElement("section");
+                let border=borderData[i];
+                sec.innerHTML=`
+                <p>${border.name.common}</p>
+                `
+                borderSec.appendChild(sec);
+            }
+          }
+          
         }
     catch(error){
         DisplayCoutry.innerHTML = `<p style="color:red;">${error.message}</p>`;
